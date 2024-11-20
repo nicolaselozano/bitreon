@@ -1,0 +1,59 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "REST API",
+    "description": "Descripción de la API de autenticación"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3005",
+      "description": "Servidor local de desarrollo"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Operaciones relacionadas con la autenticación"
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/login": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}
