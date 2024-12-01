@@ -1,33 +1,51 @@
 import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
-import authRoutes from './src/routes/Auth';
 import path from 'path';
 import cors from 'cors';
 import fs from 'fs';
 import { config } from "dotenv";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import passport from 'passport';
+import './src/config/passport';
+import authRoutes from './src/routes/Auth';
+import googleAuthRoutes from './src/routes/GoogleAuth';
+import { RateLimitService } from './src/services/RateLimitService';
+import { bannedIPs } from './src/services/security/BanIp';
 
 config();
 
 const app = express();
-
 const port = process.env.PORT || 3000;
-process.env.NODE_ENV = 'development';
-
-const proxyMiddleware = createProxyMiddleware<Request,Response>({
-  target:`${'http://localhost:8080'}`,
-  changeOrigin:true
-});
 
 app.use(express.json());
 app.use(cors());
+app.use(passport.initialize());
 
-app.use("/api",proxyMiddleware);
+// Proxy para api Java
+const proxyMiddleware = createProxyMiddleware<Request, Response>({
+  target: 'http://localhost:8080',
+  changeOrigin: true,
+});
 
-app.use(
-    authRoutes,
+app.use("/api", proxyMiddleware);
+
+// Rutas de autenticación
+app.use("/auth",
+  RateLimitService.SetTime(1, 10,
+    (req, res, next) => {
+      const clientIP = req.ip;
+
+      bannedIPs.add(clientIP);
+
+      console.log(`IP bloqueada: ${clientIP}`);
+      res.status(429).json({ error: "Demasiadas solicitudes. Tu IP ha sido bloqueada temporalmente." });
+    }),
+  RateLimitService.SetTime(1, 5),
+  authRoutes,
+  googleAuthRoutes
 );
 
+// Configuración Swagger
 const swaggerFilePath = path.join(__dirname, './src/config/swagger.json');
 
 if (fs.existsSync(swaggerFilePath)) {

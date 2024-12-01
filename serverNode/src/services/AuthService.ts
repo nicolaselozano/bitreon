@@ -1,16 +1,12 @@
 import axios from "axios"
 import { AuthUserDTO } from "../utils/DTO/AuthUserDTO"
-import dotenv from "dotenv";
 import { AuthUtils } from "../utils/auth/AuthUtils";
-
-dotenv.config();
-
-const API_JAVA_ENDPOINT = process.env["API_JAVA"] as string;
+import config from '../config/config';
 
 const RegisterUser = async (userData: AuthUserDTO): Promise<string | Error> => {
 
     try {
-        const { data }: { data: (AuthUserDTO) } = await axios.post(`${API_JAVA_ENDPOINT}/users/register`, userData);
+        const { data }: { data: (AuthUserDTO) } = await axios.post(`${config.API_JAVA}/users/register`, userData);
 
         if (!data.username || !data.email) throw new Error("No se obtuvo los datos del usuario");
 
@@ -35,8 +31,7 @@ const LoginUser = async (userData: AuthUserDTO): Promise<string | Error> => {
 
         if (!username || !email || !password) throw Error("Faltan datos para el login");
 
-        // no usar encodeURIComponent ya que de eso se encarga la api java
-        const url = `${API_JAVA_ENDPOINT}/users/login?` +
+        const url = `${config.API_JAVA}/users/login?` +
             `username=${userData.username}` +
             `&email=${userData.email}` +
             `&password=${userData.password}`;

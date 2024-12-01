@@ -1,11 +1,7 @@
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
-import dotenv from "dotenv";
+import config from "../../config/config";
 
-dotenv.config();
-
-const secretKey = process.env.SECRET_KEY as string;
-
-if (!secretKey) {
+if (!config.SECRET_KEY) {
     throw new Error("SECRET_KEY is not set in environment variables.");
 }
 const CreateToken = (username: string, email:string) => {
@@ -14,7 +10,7 @@ const CreateToken = (username: string, email:string) => {
         return new JsonWebTokenError("Username and password are required");
     }
 
-    const token = jwt.sign({ username,email }, secretKey, { expiresIn: "1h" });
+    const token = jwt.sign({ username,email }, config.SECRET_KEY, { expiresIn: "1h" });
     return token;
 }
 
@@ -22,7 +18,7 @@ const CheckToken = (headerToken: string) => {
 
     try {
         const token = headerToken.split(" ")[1];
-        const payload = jwt.verify(token, secretKey);
+        const payload = jwt.verify(token, config.SECRET_KEY);
         return payload;
     } catch (error) {
         return error;

@@ -1,93 +1,40 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.0",
   "info": {
-    "title": "Auth API",
-    "description": "API for user authentication.",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "title": "REST API",
+    "description": "Descripción de la API de autenticación"
   },
+  "servers": [
+    {
+      "url": "http://localhost:3005",
+      "description": "Servidor local de desarrollo"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Operaciones relacionadas con la autenticación"
+    }
+  ],
   "paths": {
     "/auth": {
       "get": {
-        "summary": "Get Auth endpoint",
-        "description": "Returns a message indicating the auth endpoint.",
+        "description": "",
         "responses": {
           "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "message": "Auth endpoint"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Register a new user",
-        "description": "Registers a user and returns a new token.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  }
-                },
-                "required": ["username", "password", "email"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User registered successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "token": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Error occurred during registration"
+            "description": "OK"
           }
         }
       }
     },
     "/login": {
       "get": {
-        "summary": "Login user",
-        "description": "Logs in a user and returns a new token.",
+        "description": "",
         "parameters": [
           {
             "name": "username",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -95,7 +42,6 @@
           {
             "name": "password",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -103,34 +49,76 @@
           {
             "name": "email",
             "in": "query",
-            "required": true,
             "schema": {
-              "type": "string",
-              "format": "email"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "User logged in successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "token": {
-                      "type": "string"
-                    }
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "example": "any"
+                  },
+                  "password": {
+                    "example": "any"
+                  },
+                  "email": {
+                    "example": "any"
                   }
                 }
               }
             }
-          },
-          "404": {
-            "description": "Error occurred during login"
+          }
+        }
+      }
+    },
+    "/google": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/google/callback": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
     }
+  },
+  "components": {
+    "schemas": {}
   }
 }
