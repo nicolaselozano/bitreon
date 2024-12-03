@@ -11,4 +11,6 @@ export const config = {
   CALLBACK_URL:process.env.CALLBACK_URL || ""
 };
 
+export const tokenCookieName = 'token';
+
 export default config;

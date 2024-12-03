@@ -10,7 +10,7 @@ import './src/config/passport';
 import authRoutes from './src/routes/Auth';
 import googleAuthRoutes from './src/routes/GoogleAuth';
 import { RateLimitService } from './src/services/RateLimitService';
-import { bannedIPs } from './src/services/security/BanIp';
+import cookieParser from 'cookie-parser';
 
 config();
 
@@ -18,6 +18,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors());
 app.use(passport.initialize());
 
@@ -31,11 +32,9 @@ app.use("/api", proxyMiddleware);
 
 // Rutas de autenticación
 app.use("/auth",
-  RateLimitService.SetTime(1, 10,
+  RateLimitService.SetTime(2, 15,
     (req, res, next) => {
       const clientIP = req.ip;
-
-      bannedIPs.add(clientIP);
 
       console.log(`IP bloqueada: ${clientIP}`);
       res.status(429).json({ error: "Demasiadas solicitudes. Tu IP ha sido bloqueada temporalmente." });

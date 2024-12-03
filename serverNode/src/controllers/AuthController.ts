@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { AuthUtils } from "../utils/auth/AuthUtils";
 import { AuthService } from "../services/AuthService";
+import { tokenCookieName } from "../config/config";
+import { CookieConfig } from "../utils/auth/CookieConfig";
 
 
 const RegisterUser = async (req: Request, res: Response) => {
@@ -14,7 +16,7 @@ const RegisterUser = async (req: Request, res: Response) => {
             password,
             username
         });
-
+        res.cookie(tokenCookieName, `Bearer ${newToken}`, CookieConfig());
         res.status(200).json(newToken);
 
     } catch (error) {
@@ -36,7 +38,8 @@ const LoginUser = async (req: Request, res: Response) => {
             password,
             username
         });
-
+        
+        res.cookie(tokenCookieName, `Bearer ${newToken}`, CookieConfig());
         res.status(200).json(newToken);
 
     } catch (error) {

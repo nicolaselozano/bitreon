@@ -1,20 +1,10 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { AuthController } from '../controllers/AuthController';
-import { bannedIPs } from '../services/security/BanIp';
+import { MToken } from '../middlewares/MToken';
 
 const router = Router();
 
-router.use((req: Request, res: Response, next: NextFunction):void => {
-    const clientIP = req.ip;
-
-    if (bannedIPs.has(clientIP)) {
-        res.status(403).json({ error: 'Tu IP está bloqueada por actividad sospechosa.' });
-    }
-
-    next();
-});
-
-router.get('/auth', (req, res) => {
+router.get('/',MToken.Check, (req, res) => {
     res.json({ message: 'Auth endpoint' });
 });
 
