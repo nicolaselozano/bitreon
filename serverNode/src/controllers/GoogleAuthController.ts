@@ -8,7 +8,8 @@ const googleCallback = (req: Request, res: Response) => {
     console.log("soy el callback", req.user);
     
     const newToken = AuthUtils.CreateToken(user.username, user.email);
-    res.cookie(tokenCookieName, `Bearer ${newToken}`, CookieConfig());
+    const RefreshToken = AuthUtils.CreateRefreshToken(user.username, user.email);
+    res.cookie(tokenCookieName, `Bearer ${RefreshToken}`, CookieConfig());
     res.json({ newToken });
   };
 

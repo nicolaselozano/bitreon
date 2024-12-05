@@ -1,18 +1,22 @@
 import axios from "axios"
-import { AuthUserDTO } from "../utils/DTO/AuthUserDTO"
+import { AuthUserDTO, TokenResponse } from "../utils/DTO/AuthUserDTO"
 import { AuthUtils } from "../utils/auth/AuthUtils";
 import config from '../config/config';
 
-const RegisterUser = async (userData: AuthUserDTO): Promise<string | Error> => {
+const RegisterUser = async (userData: AuthUserDTO): Promise<TokenResponse | Error> => {
 
     try {
         const { data }: { data: (AuthUserDTO) } = await axios.post(`${config.API_JAVA}/users/register`, userData);
 
         if (!data.username || !data.email) throw new Error("No se obtuvo los datos del usuario");
 
-        const newToken = AuthUtils.CreateToken(data.username, data.email);
+        const newToken = AuthUtils.CreateToken(data.username, data.email) as string;
+        const newRToken = AuthUtils.CreateRefreshToken(data.username, data.email) as string;
 
-        return newToken;
+        return {
+            token:newToken,
+            refreshToken:newRToken
+        };
 
     } catch (error: any) {
         console.error(error);
@@ -22,7 +26,7 @@ const RegisterUser = async (userData: AuthUserDTO): Promise<string | Error> => {
 
 }
 
-const LoginUser = async (userData: AuthUserDTO): Promise<string | Error> => {
+const LoginUser = async (userData: AuthUserDTO): Promise<TokenResponse | Error> => {
 
     try {
 
@@ -41,9 +45,14 @@ const LoginUser = async (userData: AuthUserDTO): Promise<string | Error> => {
         const { data }: { data: (AuthUserDTO) } = await axios.get(url);
 
         if (!data.username || !data.email) throw new Error("No se obtuvo los datos del usuario");
-        const newToken = AuthUtils.CreateToken(data.username, data.email);
 
-        return newToken;
+        const newToken = AuthUtils.CreateToken(data.username, data.email) as string;
+        const newRToken = AuthUtils.CreateRefreshToken(data.username, data.email) as string;
+        
+        return {
+            token:newToken,
+            refreshToken:newRToken
+        };
 
 
     } catch (error: any) {

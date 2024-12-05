@@ -15,104 +15,150 @@
     {
       "name": "Auth",
       "description": "Operaciones relacionadas con la autenticación"
+    },
+    {
+      "name": "Google Auth",
+      "description": "Operaciones relacionadas con la autenticación mediante Google"
     }
   ],
   "paths": {
-    "/auth": {
+    "/auth/": {
       "get": {
-        "description": "",
+        "tags": ["Auth"],
+        "summary": "Endpoint principal",
+        "description": "Devuelve un mensaje de bienvenida al endpoint principal.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Mensaje de bienvenida"
+          },
+          "401": {
+            "description": "No autorizado"
           }
         }
       }
     },
-    "/login": {
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Refrescar token",
+        "description": "Genera un nuevo token utilizando el token de refresco.",
+        "responses": {
+          "200": {
+            "description": "Nuevo token generado"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
+    },
+    "/auth/login": {
       "get": {
-        "description": "",
+        "tags": ["Auth"],
+        "summary": "Iniciar sesión",
+        "description": "Permite a los usuarios iniciar sesión en la aplicación.",
         "parameters": [
           {
             "name": "username",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Nombre de usuario del cliente"
           },
           {
             "name": "password",
             "in": "query",
+            "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Contraseña del cliente"
           },
           {
             "name": "email",
             "in": "query",
+            "required": false,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Correo electrónico del cliente"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Sesión iniciada correctamente"
           },
           "404": {
-            "description": "Not Found"
+            "description": "Usuario no encontrado"
           }
         }
       }
     },
-    "/register": {
+    "/auth/register": {
       "post": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        },
+        "tags": ["Auth"],
+        "summary": "Registro de usuario",
+        "description": "Registra un nuevo usuario en la aplicación.",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "username": {
-                    "example": "any"
+                    "type": "string",
+                    "example": "usuario123"
                   },
                   "password": {
-                    "example": "any"
+                    "type": "string",
+                    "example": "contraseñaSegura123"
                   },
                   "email": {
-                    "example": "any"
+                    "type": "string",
+                    "example": "usuario@example.com"
                   }
-                }
+                },
+                "required": ["username", "password", "email"]
               }
             }
           }
-        }
-      }
-    },
-    "/google": {
-      "get": {
-        "description": "",
+        },
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Usuario registrado exitosamente"
+          },
+          "400": {
+            "description": "Datos de entrada inválidos"
           }
         }
       }
     },
-    "/google/callback": {
+    "/auth/google": {
       "get": {
-        "description": "",
+        "tags": ["Google Auth"],
+        "summary": "Autenticación con Google",
+        "description": "Inicia el proceso de autenticación mediante Google.",
+        "responses": {
+          "302": {
+            "description": "Redirección al servicio de Google"
+          }
+        }
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "tags": ["Google Auth"],
+        "summary": "Callback de Google",
+        "description": "Callback que maneja la respuesta del servicio de autenticación de Google.",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Autenticación completada con éxito"
+          },
+          "400": {
+            "description": "Error en la autenticación"
           }
         }
       }

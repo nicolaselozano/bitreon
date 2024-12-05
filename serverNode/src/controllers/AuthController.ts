@@ -3,6 +3,7 @@ import { AuthUtils } from "../utils/auth/AuthUtils";
 import { AuthService } from "../services/AuthService";
 import { tokenCookieName } from "../config/config";
 import { CookieConfig } from "../utils/auth/CookieConfig";
+import { TokenResponse } from "../utils/DTO/AuthUserDTO";
 
 
 const RegisterUser = async (req: Request, res: Response) => {
@@ -16,7 +17,11 @@ const RegisterUser = async (req: Request, res: Response) => {
             password,
             username
         });
-        res.cookie(tokenCookieName, `Bearer ${newToken}`, CookieConfig());
+        res.cookie(tokenCookieName, `Bearer ${newToken}`, CookieConfig(
+            {
+                maxAge: 20 * 24 * 60 * 60 * 1000
+            }
+        ));
         res.status(200).json(newToken);
 
     } catch (error) {
@@ -33,14 +38,20 @@ const LoginUser = async (req: Request, res: Response) => {
 
         const { username, password, email } = req.query;
 
-        const newToken = await AuthService.LoginUser({
+        const newToken: TokenResponse | Error = await AuthService.LoginUser({
             email,
             password,
             username
-        });
-        
-        res.cookie(tokenCookieName, `Bearer ${newToken}`, CookieConfig());
-        res.status(200).json(newToken);
+        }) as TokenResponse;
+
+
+
+        res.cookie(tokenCookieName, `Bearer ${newToken.refreshToken}`, CookieConfig(
+            {
+                maxAge: 20 * 24 * 60 * 60 * 1000
+            }
+        ));
+        res.status(200).json(newToken.token);
 
     } catch (error) {
 

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { NextFunction } from "http-proxy-middleware/dist/types";
-import { Jwt, JwtHeader, JwtPayload } from "jsonwebtoken";
 import { AuthUtils } from "../utils/auth/AuthUtils";
 import { tokenCookieName } from "../config/config";
 
@@ -14,7 +13,7 @@ const Check = async (req: Request, res: Response, next: NextFunction): Promise<v
 
     console.log(`Token received: ${header}`);
 
-    const payload = AuthUtils.CheckToken(header); // Asume que CheckToken es síncrono; actualiza si es necesario.
+    const payload = AuthUtils.CheckToken(header);
 
     console.log(`Payload: ${JSON.stringify(payload)}`);
 

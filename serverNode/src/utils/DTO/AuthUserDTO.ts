@@ -3,3 +3,8 @@ export interface AuthUserDTO {
     email?:string | any
     password?:string | any
 }
+
+export interface TokenResponse {
+    token:string
+    refreshToken:string
+}

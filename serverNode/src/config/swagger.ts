@@ -13,23 +13,25 @@ const doc = {
       description: 'Servidor local de desarrollo',
     },
   ],
-  components: {
-    schemas: {
-    },
-  },
   tags: [
     {
       name: 'Auth',
       description: 'Operaciones relacionadas con la autenticación',
     },
+    {
+      name: 'Google Auth',
+      description: 'Operaciones relacionadas con la autenticación mediante Google',
+    },
   ],
+  components: {
+    schemas: {},
+  },
 };
 
 const outputFile = './swagger-output.json';
+const endpointsFiles = [path.resolve(__dirname, '../routes/auth.ts'), path.resolve(__dirname, '../routes/googleAuth.ts')];
 
-const routes = [path.resolve(__dirname, '../routes/*.ts')];
-
-swaggerAutogen({ openapi: '3.0.0' })(outputFile, routes, doc)
+swaggerAutogen({ openapi: '3.0.0' })(outputFile, endpointsFiles, doc)
   .then(() => {
     console.log('swagger-output.json generado correctamente');
   })
