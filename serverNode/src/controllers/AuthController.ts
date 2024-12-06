@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AuthUtils } from "../utils/auth/AuthUtils";
 import { AuthService } from "../services/AuthService";
-import { tokenCookieName } from "../config/config";
+import { refreshTokenCookieName } from "../config/config";
 import { CookieConfig } from "../utils/auth/CookieConfig";
 import { TokenResponse } from "../utils/DTO/AuthUserDTO";
 
@@ -17,7 +17,7 @@ const RegisterUser = async (req: Request, res: Response) => {
             password,
             username
         });
-        res.cookie(tokenCookieName, `Bearer ${newToken}`, CookieConfig(
+        res.cookie(refreshTokenCookieName, `Bearer ${newToken}`, CookieConfig(
             {
                 maxAge: 20 * 24 * 60 * 60 * 1000
             }
@@ -46,7 +46,7 @@ const LoginUser = async (req: Request, res: Response) => {
 
 
 
-        res.cookie(tokenCookieName, `Bearer ${newToken.refreshToken}`, CookieConfig(
+        res.cookie(refreshTokenCookieName, `Bearer ${newToken.refreshToken}`, CookieConfig(
             {
                 maxAge: 20 * 24 * 60 * 60 * 1000
             }

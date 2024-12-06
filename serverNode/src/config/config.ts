@@ -13,5 +13,6 @@ export const config = {
 };
 
 export const tokenCookieName = 'token';
+export const refreshTokenCookieName = 'rtoken';
 
 export default config;
