@@ -12,17 +12,21 @@ const RegisterUser = async (req: Request, res: Response) => {
 
         const { username, password, email } = req.body;
 
-        const newToken = await AuthService.RegisterUser({
+        const newToken: TokenResponse = await AuthService.RegisterUser({
             email,
             password,
             username
-        });
-        res.cookie(refreshTokenCookieName, `Bearer ${newToken}`, CookieConfig(
+        }) as TokenResponse;
+
+        res.cookie(refreshTokenCookieName, `Bearer ${newToken.refreshToken}`, CookieConfig(
             {
                 maxAge: 20 * 24 * 60 * 60 * 1000
             }
         ));
-        res.status(200).json(newToken);
+        res.status(200).json(newToken.token);
+
+
+
 
     } catch (error) {
 

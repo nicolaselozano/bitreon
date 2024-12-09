@@ -32,7 +32,12 @@ public class UserController {
 
     @PostMapping("/register")
     public PublicUserDto registerUser(@RequestBody UserEntity userEntity) {
-        return userService.registerUser(userEntity);
+        try {
+            return userService.registerUser(userEntity);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @GetMapping("/login")

@@ -7,7 +7,7 @@ const RegisterUser = async (userData: AuthUserDTO): Promise<TokenResponse | Erro
 
     try {
         const { data }: { data: (AuthUserDTO) } = await axios.post(`${config.API_JAVA}/users/register`, userData);
-
+        
         if (!data.username || !data.email) throw new Error("No se obtuvo los datos del usuario");
 
         const newToken = AuthUtils.CreateToken(data.username, data.email) as string;
@@ -19,9 +19,9 @@ const RegisterUser = async (userData: AuthUserDTO): Promise<TokenResponse | Erro
         };
 
     } catch (error: any) {
-        console.error(error);
-
-        return error;
+        console.log(error.message);
+        
+        throw error;
     }
 
 }

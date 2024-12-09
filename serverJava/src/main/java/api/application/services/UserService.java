@@ -6,8 +6,10 @@ import api.application.dto.LoginDto;
 import api.application.dto.PublicUserDto;
 import api.application.dto.UserUpdateDto;
 import api.infrastructure.api.utils.UserMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +49,7 @@ public class UserService {
 
             return publicUserDto;
         } catch (RuntimeException e) {
-            throw new RuntimeException("Error al registrar el usuario", e);
+            throw new RuntimeException("Error al registrar el usuario : "+ e.getMessage());
         }
     }
 
@@ -56,10 +58,16 @@ public class UserService {
         UserEntity userEntity;
         if (!loginData.getEmail().isEmpty()) {
             userEntity = repository.findByEmail(loginData.getEmail())
-                    .orElseThrow(() -> new RuntimeException("No se encontró el usuario con ese email"));
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "No se encontró el usuario con ese email"
+                    ));
         } else {
             userEntity = repository.findByUsername(loginData.getUsername())
-                    .orElseThrow(() -> new RuntimeException("No se encontró el usuario con ese nombre de usuario"));
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "No se encontró el usuario con ese nombre de usuario"
+                    ));
         }
 
         if (!BCrypt.checkpw(loginData.getPassword(), userEntity.getPassword())) {
@@ -79,7 +87,10 @@ public class UserService {
     public UserEntity delete(Long id) {
         try {
             UserEntity userEntity = repository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("No se encontro el usuario"));
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "No se encontró el usuario con ese email"
+                    ));
 
             repository.delete(userEntity);
 
