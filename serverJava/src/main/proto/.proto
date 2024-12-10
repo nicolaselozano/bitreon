@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package api;
+
+message Creator {
+  int32 id = 1;
+  string descripcion = 2;
+  repeated string niveles = 3;
+}
+
+service CreatorService {
+  rpc GetCreator(Creator) returns (Creator);
+}

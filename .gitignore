@@ -1,3 +1,31 @@
+
+# Archivos de compilación de gRPC y Protobuf
+*.pb.go        # Archivos generados de Go
+*.pb.cc        # Archivos generados de C++
+*.pb.h         # Archivos de encabezado generados en C++
+*.pb.d         # Archivos de dependencias generados de C++
+*.cs           # Archivos generados para C#
+*.pb.dart      # Archivos generados para Dart
+*.pb.js        # Archivos generados para JavaScript
+*.pb.ts        # Archivos generados para TypeScript
+
+# Directorios de compilación
+_build/
+bin/
+out/
+target/
+gen/
+
+# Archivos temporales y de caché
+*.log          # Archivos de log
+*.swp          # Archivos temporales de editores como Vim
+.DS_Store      # Archivos del sistema en MacOS
+Thumbs.db      # Archivos del sistema en Windows
+
+# Archivos generados de gRPC
+*.grpc.go      # Archivos generados para gRPC en Go
+*.grpc.pb.go   # Archivos generados para gRPC en Go
+
 # Compiled class file
 *.class
 

@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Application, Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import path from 'path';
 import cors from 'cors';
@@ -22,23 +22,21 @@ app.use(cookieParser());
 app.use(cors());
 app.use(passport.initialize());
 
-// Proxy para api Java
+// Proxy para API Java
 const proxyMiddleware = createProxyMiddleware<Request, Response>({
   target: 'http://localhost:8080',
   changeOrigin: true,
 });
-
 app.use("/api", proxyMiddleware);
 
 // Rutas de autenticación
-app.use("/auth",
-  RateLimitService.SetTime(2, 15,
-    (req, res, next) => {
-      const clientIP = req.ip;
-
-      console.log(`IP bloqueada: ${clientIP}`);
-      res.status(429).json({ error: "Demasiadas solicitudes. Tu IP ha sido bloqueada temporalmente." });
-    }),
+app.use(
+  "/auth",
+  RateLimitService.SetTime(2, 15, (req, res) => {
+    const clientIP = req.ip;
+    console.log(`IP bloqueada: ${clientIP}`);
+    res.status(429).json({ error: "Demasiadas solicitudes. Tu IP ha sido bloqueada temporalmente." });
+  }),
   RateLimitService.SetTime(1, 5),
   authRoutes,
   googleAuthRoutes
@@ -57,11 +55,15 @@ app.use('/swagger.json', (req, res) => {
   res.sendFile(swaggerFilePath);
 });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(undefined, {
-  swaggerOptions: {
-    url: '/swagger.json',
-  },
-}));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: '/swagger.json',
+    },
+  })
+);
 
 app.listen(port, () => {
   console.log(`API corriendo en http://localhost:${port}`);
