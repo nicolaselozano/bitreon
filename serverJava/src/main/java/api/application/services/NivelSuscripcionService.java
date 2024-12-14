@@ -1,9 +1,10 @@
 package api.application.services;
 
+import api.domain.models.NivelSuscripcion;
 import api.domain.repository.NivelSuscripcionRepository;
 import org.springframework.stereotype.Service;
-import api.domain.models.NivelSuscripcion;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NivelSuscripcionService {
@@ -19,5 +20,24 @@ public class NivelSuscripcionService {
 
     public NivelSuscripcion save(NivelSuscripcion nivel) {
         return repository.save(nivel);
+    }
+
+    public Optional<NivelSuscripcion> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    public NivelSuscripcion update(Long id, NivelSuscripcion updatedNivel) {
+        return repository.findById(id)
+                .map(existingNivel -> {
+                    existingNivel.setDescripcion(updatedNivel.getDescripcion());
+                    existingNivel.setPrecioMensual(updatedNivel.getPrecioMensual());
+                    existingNivel.setTiposSuscripcion(updatedNivel.getTiposSuscripcion());
+                    return repository.save(existingNivel);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Nivel de suscripción no encontrado"));
     }
 }

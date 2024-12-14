@@ -4,6 +4,7 @@ import api.domain.models.Creator;
 import api.domain.repository.CreatorRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CreatorService {
@@ -19,5 +20,13 @@ public class CreatorService {
 
     public Creator save(Creator creador) {
         return repository.save(creador);
+    }
+
+    public Optional<Creator> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 }

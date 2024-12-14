@@ -25,7 +25,9 @@ public class UserService {
     public List<UserEntity> getAll() {
         return repository.findAll();
     }
-
+    public Optional<UserEntity> findById(Long id) {
+        return repository.findById(id);
+    }
     public PublicUserDto registerUser(UserEntity userEntity) {
         try {
 
