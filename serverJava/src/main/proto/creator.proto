@@ -2,20 +2,18 @@ syntax = "proto3";
 
 package api;
 
+option java_package = "api.application.grpc";
+option java_outer_classname = "CreatorServiceProto";
+
 message Creator {
   int32 id = 1;
   string descripcion = 2;
   repeated string niveles = 3;
 }
 
-option java_package = "api.application.grpc";
-option java_outer_classname = "SubscriptionServiceProto";
-
-service SubscriptionService {
+service CreatorService {
   rpc CreateCreator (CreatorRequest) returns (CreatorResponse);
   rpc GetCreators (Empty) returns (CreatorListResponse);
-  rpc CreateNivelSuscripcion (NivelSuscripcionRequest) returns (NivelSuscripcionResponse);
-  rpc GetNiveles (Empty) returns (NivelSuscripcionListResponse);
 }
 
 message CreatorRequest {
@@ -23,31 +21,13 @@ message CreatorRequest {
   string descripcion = 2;
 }
 
-message CreatorResponse {
-  string id = 1;
-  string descripcion = 2;
-}
-
-message NivelSuscripcionRequest {
-  string creatorId = 1;
-  string tiposSuscripcion = 2; // Enum in Java
-  string descripcion = 3;
-  double precioMensual = 4;
-}
-
-message NivelSuscripcionResponse {
-  string id = 1;
-  string descripcion = 2;
-  string tiposSuscripcion = 3;
-  double precioMensual = 4;
-}
-
 message CreatorListResponse {
   repeated CreatorResponse creators = 1;
 }
 
-message NivelSuscripcionListResponse {
-  repeated NivelSuscripcionResponse niveles = 1;
+message CreatorResponse {
+  string id = 1;
+  string descripcion = 2;
 }
 
 message Empty {}

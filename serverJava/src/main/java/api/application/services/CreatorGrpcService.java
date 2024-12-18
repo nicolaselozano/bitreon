@@ -1,39 +1,66 @@
 package api.application.services;
 
+import api.application.grpc.CreatorServiceGrpc;
+import api.application.grpc.CreatorServiceProto;
 import api.application.grpc.SubscriptionServiceGrpc;
 import api.domain.models.Creator;
-import api.domain.repository.CreatorRepository;
-
-import api.application.grpc.SubscriptionServiceProto.CreatorRequest;
-import api.application.grpc.SubscriptionServiceProto.CreatorResponse;
+import api.domain.models.UserEntity;
 import io.grpc.stub.StreamObserver;
 import org.springframework.stereotype.Service;
 
-@Service
-public class CreatorGrpcService extends SubscriptionServiceGrpc.SubscriptionServiceImplBase {
-    private final CreatorRepository repository;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    public CreatorGrpcService(CreatorRepository repository) {
-        this.repository = repository;
+@Service
+public class CreatorGrpcService extends CreatorServiceGrpc.CreatorServiceImplBase {
+    private final CreatorService creatorService;
+    private final UserService userService;
+
+    public CreatorGrpcService(CreatorService creatorService, UserService userService) {
+        this.creatorService = creatorService;
+        this.userService = userService;
     }
 
-    public void getCreator(CreatorRequest request, StreamObserver<CreatorResponse> responseObserver) {
+    public void createCreator(CreatorServiceProto.CreatorRequest request, StreamObserver<CreatorServiceProto.CreatorResponse> responseObserver) {
         try {
-            // Fetch data from the repository
-            Creator creator = repository.findById(Long.valueOf((request.getUserId())))
-                    .orElseThrow(() -> new RuntimeException("Creator not found"));
+            UserEntity userEntity = userService.findById(Long.parseLong(request.getUserId()))
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + request.getUserId()));
 
-            // Map domain object to gRPC response
-            CreatorResponse response = CreatorResponse.newBuilder()
-                    .setId(String.valueOf(creator.getId()))
-                    .setDescripcion(creator.getDescripcion())
+            Creator creator = new Creator();
+            creator.setUsuario(userEntity);
+            creator.setDescripcion(request.getDescripcion());
+            Creator savedCreator = creatorService.save(creator);
+
+            CreatorServiceProto.CreatorResponse response = CreatorServiceProto.CreatorResponse.newBuilder()
+                    .setId(String.valueOf(savedCreator.getId()))
+                    .setDescripcion(savedCreator.getDescripcion())
                     .build();
 
-            // Respond to the client
             responseObserver.onNext(response);
             responseObserver.onCompleted();
+
         } catch (Exception e) {
-            // Handle errors and respond with an error status
+            responseObserver.onError(e);
+        }
+    }
+
+    public void getCreators(CreatorServiceProto.Empty request, StreamObserver<CreatorServiceProto.CreatorListResponse> responseObserver) {
+        try {
+            List<CreatorServiceProto.CreatorResponse> creators = creatorService.getAll().stream()
+                    .map(creator -> CreatorServiceProto.CreatorResponse.newBuilder()
+                            .setId(String.valueOf(creator.getId()))
+                            .setDescripcion(creator.getDescripcion())
+                            .build())
+                    .collect(Collectors.toList());
+
+            CreatorServiceProto.CreatorListResponse response = CreatorServiceProto.CreatorListResponse.newBuilder()
+                    .addAllCreators(creators)
+                    .build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+
+        } catch (Exception e) {
             responseObserver.onError(e);
         }
     }
