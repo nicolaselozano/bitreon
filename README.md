@@ -1,6 +1,6 @@
 # API para Plataforma Estilo Patreon
 
-Esta API está diseñada para una plataforma similar a Patreon, desarrollada utilizando **Express con TypeScript** y **Java Spring Boot**. Proporciona autenticación robusta y una serie de características clave para gestionar usuarios, contenido y suscripciones.
+Esta API está diseñada para una plataforma inspirada en Patreon, desarrollada utilizando **Express con TypeScript** y **Java Spring Boot**. Proporciona autenticación robusta y una serie de características clave para gestionar usuarios, contenido y suscripciones.
 
 ## Características Principales
 
